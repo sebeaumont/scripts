@@ -15,6 +15,7 @@ data Grep = Grep
   , prune :: [FilePath]
   , glob :: String
   , search :: String
+  , grepflags :: [String]
   } deriving (Show, Data, Typeable)
 
 grep = Grep
@@ -22,13 +23,19 @@ grep = Grep
   , prune = [".stack*", ".hg", ".git", "dist*"] &= typDir &= help "Directory trees to prune"
   , search = "" &= help "pattern to grep -i for"
   , glob = "*.hs" &= help "file glob to search into"
+  , grepflags = ["-b", "-i"] &= help "flags for grep"
   }
   
 
 main :: IO ()
 main = do
   args <- cmdArgs grep
-  shelly $ grepper_ (T.pack $ root args) (T.pack $ glob args) (T.pack $ search args) [T.pack p | p <- prune args]
+  shelly $ grepper_
+    (T.pack $ root args)
+    (T.pack $ glob args)
+    (T.pack $ search args)
+    [T.pack g | g <- grepflags args]
+    [T.pack p | p <- prune args]
 
 -- | excluded paths from starting dir
 excluded :: [T.Text]
@@ -38,9 +45,11 @@ exclude :: [T.Text] -> [T.Text]
 exclude [] = []
 exclude (p:ps) = ["-o", "-name", p] ++ exclude ps
 
-grepper_ :: T.Text -> T.Text -> T.Text -> [T.Text] -> Sh ()
-grepper_ dir pat term (e:es) =
+grepper_ :: T.Text -> T.Text -> T.Text -> [T.Text] -> [T.Text] -> Sh ()
+grepper_ dir pat term grepf (e:es) =
   run_ "find" $ concat [[dir, "-type", "d", "(", "-name", e],
-                        exclude es,
-                        [")", "-o", "-type", "f", "-name", pat, "-exec", "grep", "-i", term, "{}", ";", "-print"]]
+                         exclude es,
+                         [")", "-o", "-type", "f", "-name", pat, "-exec", "grep"],
+                         grepf,
+                         ["-b", "-i", term, "{}", ";", "-print"]]
   
