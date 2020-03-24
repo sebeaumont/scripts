@@ -16,4 +16,9 @@ executable grepper
                      , text
   default-language:    Haskell2010
 
+executable readpaths
+  main-is:             readpaths.hs
+  build-depends:       base
+  default-language:    Haskell2010
+
   
