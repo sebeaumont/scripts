@@ -49,7 +49,7 @@ grepper_ :: T.Text -> T.Text -> T.Text -> [T.Text] -> [T.Text] -> Sh ()
 grepper_ dir pat term grepf (e:es) =
   run_ "find" $ concat [[dir, "-type", "d", "(", "-name", e],
                          exclude es,
-                         [")", "-o", "-type", "f", "-name", pat, "-exec", "grep", "--color"],
+                         [")", "-prune", "-o", "-type", "f", "-name", pat, "-exec", "grep", "--color"],
                          grepf,
                          ["-b", "-i", term, "{}", ";","-exec", "echo", "-n", "\ESC[32m", ";",
                           "-print", "-exec", "echo", "\ESC[0m", ";"]]
