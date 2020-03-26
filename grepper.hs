@@ -51,5 +51,6 @@ grepper_ dir pat term grepf (e:es) =
                          exclude es,
                          [")", "-o", "-type", "f", "-name", pat, "-exec", "grep"],
                          grepf,
-                         ["-b", "-i", term, "{}", ";", "-print"]]
+                         ["-b", "-i", term, "{}", ";","-exec", "echo", "-n", "\ESC[32m", ";",
+                          "-print", "-exec", "echo", "\ESC[0m", ";"]]
   
