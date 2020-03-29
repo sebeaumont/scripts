@@ -21,9 +21,9 @@ data Grep = Grep
 grep = Grep
   { root = "." &= typDir &= help "Starting direcory for search"
   , prune = [".stack*", ".hg", ".git", "dist*"] &= typDir &= help "Directory trees to prune"
-  , search = "" &= help "pattern to grep -i for"
+  , search = "" &= help "pattern to grep for"
   , glob = "*.hs" &= help "file glob to search into"
-  , grepflags = ["-b", "-i"] &= help "flags for grep"
+  , grepflags = ["--color", "-H", "-b", "-i"] &= help "flags for grep"
   }
   
 
@@ -49,8 +49,14 @@ grepper_ :: T.Text -> T.Text -> T.Text -> [T.Text] -> [T.Text] -> Sh ()
 grepper_ dir pat term grepf (e:es) =
   run_ "find" $ concat [[dir, "-type", "d", "(", "-name", e],
                          exclude es,
-                         [")", "-prune", "-o", "-type", "f", "-name", pat, "-exec", "grep", "--color"],
+                         [")", "-prune", "-o",
+                          "-type", "f", "-name", pat, "-exec", "grep"],
                          grepf,
-                         ["-b", "-i", term, "{}", ";","-exec", "echo", "-n", "\ESC[32m", ";",
-                          "-print", "-exec", "echo", "\ESC[0m", ";"]]
-  
+                         ["-b", "-i", term, "{}", ";"]
+                       ]
+
+
+{-
+,"-exec", "echo", "-n", "\ESC[32m", ";",
+"-print", "-exec", "echo", "\ESC[0m", ";"]]
+-}
