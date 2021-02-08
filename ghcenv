@@ -11,10 +11,10 @@ getghc () {
 }
 
 setghc () {
-    GHCDIRS=($(ls -d ../ghc* | sed -e 's|.*/||'))
+    GHCDIRS=($(ls -d ${HOME}/.ghcenv/ghc* | sed -e 's|.*/||'))
     echo "Choose one of these ghc installs to activate:"
-    select foo in "${GHCDIRS[@]}"; do
-        ghcpath=$(realpath $(pwd)/../$foo/bin)
+    select ghc in "${GHCDIRS[@]}"; do
+        ghcpath=$(realpath ${HOME}/.ghcenv/${ghc}/bin)
         echo $ghcpath
         export PATH=${ghcpath}:$PATH
         getghc;
