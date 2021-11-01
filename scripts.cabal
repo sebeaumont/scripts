@@ -16,6 +16,14 @@ executable grepper
                      , text
   default-language:    Haskell2010
 
+executable hoogler
+  main-is:             hoogler.hs
+  build-depends:       base
+                     , uri-encode
+                     , shelly -any
+                     , text
+  default-language:    Haskell2010
+  
 executable readpath
   main-is:             readpath.hs
   build-depends:       base
