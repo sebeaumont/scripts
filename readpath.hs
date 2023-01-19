@@ -1,11 +1,9 @@
 {-# LANGUAGE LambdaCase #-}
-module Main
-  where
+module Main where
 
 import Data.List
 import System.Environment
-import System.IO.Error
-import Control.Exception (try, Exception)
+import Control.Exception (try)
 
 -- | Read the lines if any error we give up
 readlines :: FilePath -> IO (Either IOError [String])
@@ -40,7 +38,7 @@ main = do
   -- print out new path or just the exisiting environment
   -- if things are sinister...
   readlines (h ++ "/.paths") >>= \case
-    Left e -> putStr $ p 
+    Left _ -> putStr $ p 
     Right l -> putStr $ makePath l  
     
 
