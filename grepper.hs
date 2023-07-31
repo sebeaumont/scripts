@@ -42,7 +42,7 @@ main = do
         [T.pack p | p <- prune args]
 
   if dryrun args
-    then putStrLn ("find " ++ show findargs)
+    then putStrLn ("find " ++ T.unpack (T.intercalate " " findargs))
     else shelly $ run_ "find" $ findargs
 
   
